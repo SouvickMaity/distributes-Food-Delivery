@@ -1,9 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useRef,
-} from "react";
+import { createContext, useContext, useEffect, useRef } from "react";
 import { io } from "socket.io-client";
 import { useAppData } from "./AppContext";
 import { realtimeService } from "../main";
@@ -31,23 +26,20 @@ export const SocketProvider = ({ children }) => {
         token: localStorage.getItem("token"),
       },
       transports: ["websocket"],
-      reconnection: true,
-      reconnectionAttempts: Infinity,
-      reconnectionDelay: 1000,
     });
 
     socketRef.current = socket;
 
     socket.on("connect", () => {
-      console.log("✅ Socket Connected:", socket.id);
+      console.log("Socket Connected", socket.id);
     });
 
-    socket.on("disconnect", (reason) => {
-      console.log("❌ Socket Disconnected:", reason);
+    socket.on("disconnect", () => {
+      console.log("Socket Disconnected");
     });
 
     socket.on("connect_error", (err) => {
-      console.log("❌ Socket Error:", err.message);
+      console.log("Socket Error:", err.message);
     });
 
     return () => {
