@@ -19,10 +19,8 @@ export const SocketProvider = ({ children }) => {
 
   useEffect(() => {
     if (!isAuth) {
-      if (socketRef.current) {
-        socketRef.current.disconnect();
-        socketRef.current = null;
-      }
+      socketRef.current?.disconnect();
+      socketRef.current = null;
       return;
     }
 
@@ -33,20 +31,23 @@ export const SocketProvider = ({ children }) => {
         token: localStorage.getItem("token"),
       },
       transports: ["websocket"],
+      reconnection: true,
+      reconnectionAttempts: Infinity,
+      reconnectionDelay: 1000,
     });
 
     socketRef.current = socket;
 
     socket.on("connect", () => {
-      console.log("Socket Connected:", socket.id);
+      console.log("✅ Socket Connected:", socket.id);
     });
 
-    socket.on("disconnect", () => {
-      console.log("Socket Disconnected");
+    socket.on("disconnect", (reason) => {
+      console.log("❌ Socket Disconnected:", reason);
     });
 
     socket.on("connect_error", (err) => {
-      console.log("Socket Error:", err.message);
+      console.log("❌ Socket Error:", err.message);
     });
 
     return () => {
@@ -62,7 +63,5 @@ export const SocketProvider = ({ children }) => {
   );
 };
 
-export const useSocket = () => {
-  return useContext(SocketContext);
-};
+export const useSocket = () => useContext(SocketContext);
 

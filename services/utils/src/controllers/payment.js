@@ -64,9 +64,11 @@ export const verifyStripe = async (req, res) => {
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
     if (!session) {
+       console.log("sesson id not find ");
       return res.status(400).json({
         message: "Payment verification failed",
       });
+     
     }
 
     const orderId = session.metadata?.orderId;
