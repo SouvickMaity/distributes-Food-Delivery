@@ -14,6 +14,7 @@ const PaymentSuccess = () => {
     fetchCart();
   }, []);
 
+
   return (
     <div className="flex min-h-[70vh] items-center justify-center px-4">
       <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-sm text-center space-y-4">

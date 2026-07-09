@@ -151,7 +151,7 @@ const Checkout = () => {
       const order = await createOrder("stripe");
       if (!order) return;
 
-      const { orderId } = order;
+      const { orderId ,amount} = order;
 
       try {
         await stripePromise;

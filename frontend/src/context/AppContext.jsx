@@ -82,11 +82,12 @@ export const AppProvider = ({ children }) => {
       const { latitude, longitude } = position.coords;
 
       try {
-        const res = axios.get(
+        const { data } = await axios.get(
           `${authService}/api/location/reverse?lat=${latitude}&lon=${longitude}`
         );
-
-        const data = await res.json();
+        
+        console.log(data)
+        //const data = await res.json();
 
         setLocation({
           latitude,
@@ -144,6 +145,7 @@ export const useAppData = () => {
   if (!context) {
     throw new Error("useAppData must be used within AppProvider");
   }
+  
   return context;
 };
 

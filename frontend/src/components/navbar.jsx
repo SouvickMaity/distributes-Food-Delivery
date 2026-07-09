@@ -31,7 +31,7 @@ const Navbar = () => {
           to={"/"}
           className="text-2xl font-bold text-[#E23744] cursor-pointer"
         >
-          Tomato
+          QuickBite
         </Link>
 
         <div className="flex items-center gap-4">

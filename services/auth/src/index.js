@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import authRoute from "./routes/auth.js";
 import cors from "cors";
+import axios from "axios";
 
 dotenv.config();
 
@@ -36,8 +37,10 @@ app.get("/api/location/reverse", async (req, res) => {
     
   } catch (err) {
     res.status(500).json({ message: "Location fetch failed" });
+    console.log(err);
   }
 });
+
 
 
 const PORT = process.env.PORT;
