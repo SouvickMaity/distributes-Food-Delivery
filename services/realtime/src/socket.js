@@ -41,6 +41,8 @@ export const initSocket = (server) => {
       return;
     }
 
+     console.log("Decoded User:", user);
+
     const userId = user._id;
 
     socket.join(`user:${userId}`);
@@ -51,6 +53,7 @@ export const initSocket = (server) => {
 
     console.log(`User connected: ${userId}`);
     console.log("Socket rooms:", [...socket.rooms]);
+    
 
     socket.on("disconnect", () => {
       console.log(`User disconnected: ${userId}`);

@@ -269,19 +269,6 @@ const Checkout = () => {
         <h3 className="font-semibold">Payment Method</h3>
 
         <button
-          disabled={!selectedAddressId || loadingRazorpay || creatingOrder}
-          onClick={payWithRazorpay}
-          className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#2D7FF9] py-3 text-sm font-semibold text-white hover:bg-blue-500 disabled:opacity-50"
-        >
-          {loadingRazorpay ? (
-            <BiLoader size={18} className="animate-spin" />
-          ) : (
-            <BiCreditCard size={18} />
-          )}
-          Pay With Razorpay
-        </button>
-
-        <button
           disabled={!selectedAddressId || loadingStripe || creatingOrder}
           onClick={payWithStripe}
           className="flex w-full items-center justify-center gap-2 rounded-lg bg-black py-3 text-sm font-semibold text-white hover:bg-gray-800 disabled:opacity-50"

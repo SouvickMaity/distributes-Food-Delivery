@@ -1,10 +1,5 @@
 import axios from "axios";
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { authService, restaurantService } from "../main";
 import { Toaster } from "react-hot-toast";
 
@@ -18,10 +13,6 @@ export const AppProvider = ({ children }) => {
   const [location, setLocation] = useState(null);
   const [loadingLocation, setLoadingLocation] = useState(false);
   const [city, setCity] = useState("Fetching Location...");
-
-  const [cart, setCart] = useState([]);
-  const [subTotal, setSubTotal] = useState(0);
-  const [quauntity, setQuauntity] = useState(0);
 
   async function fetchUser() {
     try {
@@ -42,6 +33,10 @@ export const AppProvider = ({ children }) => {
     }
   }
 
+  const [cart, setCart] = useState([]);
+  const [subTotal, setSubTotal] = useState(0);
+  const [quauntity, setQuauntity] = useState(0);
+
   async function fetchCart() {
     if (!user || user.role !== "customer") return;
 
@@ -54,7 +49,7 @@ export const AppProvider = ({ children }) => {
 
       setCart(data.cart || []);
       setSubTotal(data.subtotal || 0);
-      setQuauntity(data.cartLength);
+      setQuauntity(data.cartLength || 0);
     } catch (error) {
       console.log(error);
     }
@@ -72,7 +67,7 @@ export const AppProvider = ({ children }) => {
 
   useEffect(() => {
     if (!navigator.geolocation) {
-      alert("Please allow location to continue");
+      alert("Please Allow Location to continue");
       return;
     }
 
@@ -82,28 +77,27 @@ export const AppProvider = ({ children }) => {
       const { latitude, longitude } = position.coords;
 
       try {
-        const { data } = await axios.get(
-          `${authService}/api/location/reverse?lat=${latitude}&lon=${longitude}`
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
         );
-        
-        console.log(data)
-        //const data = await res.json();
+
+        const data = await res.json();
 
         setLocation({
           latitude,
           longitude,
-          formattedAddress: data.display_name || "current location",
+          formattedAddress: data.display_name || "Current Location",
         });
 
         setCity(
           data.address?.city ||
-          data.address?.town ||
-          data.address?.village ||
-          "Your Location"
+            data.address?.town ||
+            data.address?.village ||
+            "Your Location"
         );
-
-        setLoadingLocation(false);
       } catch (error) {
+        console.log(error);
+
         setLocation({
           latitude,
           longitude,
@@ -111,6 +105,7 @@ export const AppProvider = ({ children }) => {
         });
 
         setCity("Failed to load");
+      } finally {
         setLoadingLocation(false);
       }
     });
@@ -142,10 +137,11 @@ export const AppProvider = ({ children }) => {
 
 export const useAppData = () => {
   const context = useContext(AppContext);
+
   if (!context) {
     throw new Error("useAppData must be used within AppProvider");
   }
-  
+
   return context;
 };
 

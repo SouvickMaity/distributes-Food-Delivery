@@ -318,6 +318,9 @@ import { publishEvent } from "../config/order.publisher.js";
         }
         );
 
+
+       
+
         // Now assign riders
         if (status === "ready_for_rider") {
         console.log(

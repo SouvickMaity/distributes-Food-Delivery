@@ -111,7 +111,7 @@ export const fetchMyRestaurant = async (req, res) => {
         {
           user: {
             ...req.user,
-            restaurantId: restaurant._id,
+            restaurantId: restaurant._id.toString(),
           },
         },
         process.env.JWT_SEC,
@@ -321,3 +321,4 @@ export const fetchSingleRestaurant = async (req, res) => {
     });
   }
 };
+
