@@ -20,7 +20,7 @@ const deliveryIcon = new L.DivIcon({
 
 const Routing = ({ from, to }) => {
   const map = useMap();
-
+ console.log("L.Routing =", L.Routing);
   useEffect(() => {
     const control = L.Routing.control({
       waypoints: [L.latLng(from), L.latLng(to)],
@@ -67,7 +67,17 @@ const RiderOrderMap = ({ order }) => {
           const longitude = pos.coords.longitude;
 
           setRiderLocation([latitude, longitude]);
+          console.log("Internal key:", import.meta.env.VITE_INTERNAL_SERVICE_KEY);
+          console.log(
+              "EMITTING ROOM:",
+              `user:${order.userId}`
+            );
 
+            console.log(
+              "RIDER LOCATION:",
+              latitude,
+              longitude
+            );
           axios.post(
             `${realtimeService}/api/v1/internal/emit`,
             {

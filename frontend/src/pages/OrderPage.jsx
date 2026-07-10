@@ -52,15 +52,18 @@ const OrderPage = () => {
     };
   }, [socket]);
 
+
   useEffect(() => {
     if (!socket || !id) return;
-
+  
     socket.emit("join", `user:${id}`);
 
     return () => {
       socket.emit("leave", `user:${id}`);
     };
   }, [socket, id]);
+
+
 
   useEffect(() => {
     if (!socket) return;
