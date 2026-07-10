@@ -7,12 +7,12 @@ import { AppProvider } from "./context/AppContext.jsx";
 import "leaflet/dist/leaflet.css";
 import { SocketProvider } from "./context/SocketContext.jsx";
 
-export const authService = import.meta.env.VITE_AUTH_SERVICE;
-export const restaurantService = import.meta.env.VITE_RESTAURANT_SERVICE;
-export const utilsService = import.meta.env.VITE_UTILS_SERVICE;
-export const realtimeService = import.meta.env.VITE_REALTIME_SERVICE;
-export const riderService = import.meta.env.VITE_RIDER_SERVICE;
-export const adminService = import.meta.env.VITE_ADMIN_SERVICE;
+export const authService = 'https://distributes-food-delivery-auth.onrender.com'
+export const restaurantService = 'https://distributes-food-delivery-restaurant1.onrender.com'
+export const utilsService = 'https://distributes-food-delivery-utils.onrender.com'
+export const realtimeService = 'https://distributes-food-delivery-realtime.onrender.com'
+export const riderService = 'https://distributes-food-delivery-rider.onrender.com'
+export const adminService = 'https://distributes-food-delivery.onrender.com'
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
