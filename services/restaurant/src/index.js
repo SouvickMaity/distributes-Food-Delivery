@@ -6,6 +6,7 @@ import itemRoutes from "./routes/menuitem.js";
 import cartRoutes from "./routes/cart.js";
 import addressRoutes from "./routes/address.js";
 import orderRoutes from "./routes/order.js";
+import analyticsRoutes from "./routes/analytics.routes.js"
 import cors from "cors";
 import { connectRabbitMQ } from "./config/rabbitmq.js";
 import { startPaymentConsumer } from "./config/payment.consumer.js";
@@ -28,6 +29,7 @@ import { startPaymentConsumer } from "./config/payment.consumer.js";
   app.use("/api/cart", cartRoutes);
   app.use("/api/address", addressRoutes);
   app.use("/api/order", orderRoutes);
+  app.use("/api/analytics", analyticsRoutes);
   //router.get("/api/reverse-geocode", reverseGeocode);
 
 

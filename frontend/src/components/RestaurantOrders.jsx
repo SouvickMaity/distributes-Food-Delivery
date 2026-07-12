@@ -14,10 +14,15 @@ const ACTIVE_STATUSES = [
   "picked_up",
 ];
 
+const COMPLETED_STATUSES = ["delivered", "cancelled"];
+
 const RestaurantOrders = ({ restaurantId }) => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [audioUnlocked, setAudioUnlocked] = useState(false);
+
+  // Used only to force a re-render every minute
+  const [, setRefresh] = useState(0);
 
   const { socket } = useSocket();
   const audioRef = useRef(null);
@@ -35,10 +40,9 @@ const RestaurantOrders = ({ restaurantId }) => {
           audioRef.current.pause();
           audioRef.current.currentTime = 0;
           setAudioUnlocked(true);
-          console.log("Audio unlocked");
         })
         .catch((err) => {
-          console.log("Failed to unlock audio:", err);
+          console.log(err);
         });
     }
   };
@@ -63,20 +67,28 @@ const RestaurantOrders = ({ restaurantId }) => {
   };
 
   useEffect(() => {
-    fetchOrders();
+    if (restaurantId) {
+      fetchOrders();
+    }
   }, [restaurantId]);
 
+  // Re-render every minute so completed orders disappear after 5 minutes
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRefresh((prev) => prev + 1);
+    }, 60000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // New order socket
   useEffect(() => {
     if (!socket) return;
 
     const onNewOrder = () => {
-      console.log("New order received via socket");
-
       if (audioUnlocked && audioRef.current) {
         audioRef.current.currentTime = 0;
-        audioRef.current.play().catch((err) => {
-          console.error("Audio play failed:", err);
-        });
+        audioRef.current.play().catch(console.error);
       }
 
       fetchOrders();
@@ -89,6 +101,7 @@ const RestaurantOrders = ({ restaurantId }) => {
     };
   }, [socket, audioUnlocked]);
 
+  // Order updates
   useEffect(() => {
     if (!socket) return;
 
@@ -97,9 +110,11 @@ const RestaurantOrders = ({ restaurantId }) => {
     };
 
     socket.on("order:rider_assigned", onUpdateOrder);
+    socket.on("order:status_updated", onUpdateOrder);
 
     return () => {
       socket.off("order:rider_assigned", onUpdateOrder);
+      socket.off("order:status_updated", onUpdateOrder);
     };
   }, [socket]);
 
@@ -107,13 +122,17 @@ const RestaurantOrders = ({ restaurantId }) => {
     return <p className="text-gray-500">Loading Orders...</p>;
   }
 
-  const activeOrders = orders.filter((o) =>
-    ACTIVE_STATUSES.includes(o.status)
+  const activeOrders = orders.filter((order) =>
+    ACTIVE_STATUSES.includes(order.status)
   );
 
-  const completedOrders = orders.filter(
-    (o) => !ACTIVE_STATUSES.includes(o.status)
-  );
+  const recentCompletedOrders = orders.filter((order) => {
+    if (!COMPLETED_STATUSES.includes(order.status)) return false;
+
+    const completedTime = new Date(order.updatedAt).getTime();
+
+    return Date.now() - completedTime < 5 * 60 * 1000;
+  });
 
   return (
     <div className="space-y-6">
@@ -135,7 +154,7 @@ const RestaurantOrders = ({ restaurantId }) => {
 
           <button
             onClick={unlockAudio}
-            className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition hover:bg-blue-700"
+            className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
           >
             Enable Sound
           </button>
@@ -147,9 +166,9 @@ const RestaurantOrders = ({ restaurantId }) => {
         <h3 className="text-lg font-semibold">Active Orders</h3>
 
         {activeOrders.length === 0 ? (
-          <p className="text-sm text-gray-500">No active orders.</p>
+          <p className="text-gray-500">No active orders.</p>
         ) : (
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-2">
             {activeOrders.map((order) => (
               <OrderCard
                 key={order._id}
@@ -161,15 +180,19 @@ const RestaurantOrders = ({ restaurantId }) => {
         )}
       </div>
 
-      {/* Completed Orders */}
+      {/* Recently Completed */}
       <div className="space-y-3">
-        <h3 className="text-lg font-semibold">Completed Orders</h3>
+        <h3 className="text-lg font-semibold">
+          Recently Completed (Last 5 Minutes)
+        </h3>
 
-        {completedOrders.length === 0 ? (
-          <p className="text-sm text-gray-500">No completed orders.</p>
+        {recentCompletedOrders.length === 0 ? (
+          <p className="text-gray-500">
+            No recently completed orders.
+          </p>
         ) : (
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            {completedOrders.map((order) => (
+          <div className="grid gap-4 md:grid-cols-2">
+            {recentCompletedOrders.map((order) => (
               <OrderCard
                 key={order._id}
                 order={order}
@@ -184,4 +207,3 @@ const RestaurantOrders = ({ restaurantId }) => {
 };
 
 export default RestaurantOrders;
-

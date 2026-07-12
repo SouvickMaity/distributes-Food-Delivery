@@ -1,0 +1,14 @@
+node_modules
+
+Docker
+
+.dockerignore
+
+.git
+
+.gitignore
+
+.env
+
+*.log
+

@@ -6,6 +6,7 @@ import RestaurantProfile from "../components/RestaurantProfile";
 import MenuItems from "../components/MenuItems";
 import AddMenuItem from "../components/AddMenuItem";
 import RestaurantOrders from "../components/RestaurantOrders";
+import RestaurantSales from "../components/RestaurantSales";
 
 const Restaurant = () => {
   const [restaurant, setRestaurant] = useState(null);
@@ -123,7 +124,9 @@ const Restaurant = () => {
             />
           )}
 
-          {tab === "sales" && <p>Sales Page</p>}
+          {tab === "sales" && (
+            <RestaurantSales restaurantId={restaurant._id} />
+          )}
         </div>
       </div>
     </div>
