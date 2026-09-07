@@ -1,7 +1,7 @@
-# Food Delivery Backend — Spring Boot Conversion
+# Food Delivery Backend —
 
 
-## Services & ports (same defaults as the original `.env` files)
+## Services & ports 
 
 | Service            | Port | Responsibility                                                        |
 |---------------------|------|-------------------------------------------------------------------------|
@@ -12,13 +12,6 @@
 | `rider-service`       | 5005 | Rider profile, availability, order acceptance, order-ready consumer     |
 | `admin-service`       | 5008 | Restaurant/rider verification, dashboard & revenue analytics            |
 
-
-## 4. Socket.IO Room Architecture
-     Authenticated user → Socket.IO → JWT verification
-     Rider/customer → user:{userId}
-     Restaurant → restaurant:{restaurantId}
-     Delivery tracking → order:{orderId}
-     The order room is shared only by the rider and customer participating in that delivery.
 
 ## 5. Customer Flow
      Register/Login → Browse Restaurants → Select Restaurant → View Menu → Add Items to Cart → " "Checkout →
